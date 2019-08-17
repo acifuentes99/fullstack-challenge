@@ -16,6 +16,10 @@ Por medio de este test se evaluarán algunos de tus conocimientos que nos intere
 5. Desarrollar lo que se indica. Si existen supuestos, estos deben definirse claramente en el README
 6. Entregar desarrollo por medio de un pull-request y notificar envío por email
 
+## Instrucciones desplegamiento de plataforma
+
+* Correr el comando "docker-compose exec web python3 manage.py migrate" en el directorio del proyecto, para poder migrar el modelo de datos a la base de datos sqlite.
+
 
 ## Instrucciones de desarrollo
 ---
