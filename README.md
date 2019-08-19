@@ -20,6 +20,13 @@ Por medio de este test se evaluarán algunos de tus conocimientos que nos intere
 
 * Correr el comando "docker-compose exec web python3 manage.py migrate" en el directorio del proyecto, para poder migrar el modelo de datos a la base de datos sqlite.
 
+## Instrucciones Frontend
+* Actualmente, se integra framework de frontend VueJS a través de la herramienta "Vue-cli". Actualmente, se encuentra implementada para desarrollo, pero todavía no para producción.
+* En la carpeta "frontend", correr el comando "npm install", para instalar las dependencias de Frontend
+* Posteriormente, iniciar el servidor de desarrollo de Frontend con el comando "npm start serve"
+* Acceder a "localhost:8000", se observará (utilizando Django para mostrar el sitio), lo desarrollado en la carpeta Frontend (utilizando un .js compilado desde vue-cli).
+* Para producción, utilizar el comando "npm run build", lo que creará una carpeta "dist", con los archivos necesarios y minificados. Aun así, actualmente no se ha logrado integrar a Django (se realizará, una vez que se complete gran parte del desafio)
+
 
 ## Instrucciones de desarrollo
 ---
