@@ -14,7 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.urls import path
+from django.views.generic import TemplateView
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from apps.base.views import index
 from apps.scraper.views import scrapeCategories, scrapeBooks
 
@@ -22,6 +25,7 @@ from apps.scraper.views import scrapeCategories, scrapeBooks
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'hello', index),
-    url(r'', scrapeBooks),
+    url(r'^$', TemplateView.as_view(template_name='home.html')),
     url(r'^api-auth/', include('rest_framework.urls'))
 ]
+urlpatterns += staticfiles_urlpatterns()
