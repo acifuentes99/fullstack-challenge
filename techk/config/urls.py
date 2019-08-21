@@ -24,8 +24,10 @@ from apps.scraper.views import scrapeCategories, scrapeBooks
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'hello', index),
+    url(r'scrape/categories', scrapeCategories),
+    url(r'scrape/books', scrapeBooks),
     url(r'^$', TemplateView.as_view(template_name='home.html')),
-    url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^api-auth/', include('rest_framework.urls')),
+    path('api/', include('apps.base.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
