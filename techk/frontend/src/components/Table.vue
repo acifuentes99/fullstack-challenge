@@ -1,37 +1,62 @@
 <template>
 	<div id="apptable">
 		<h2>Vue Table</h2>	
-  <table>
-    <thead>
-      <tr>
-        <th v-for="key in columns" v-bind:key="key">
-          {{ key }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="entry in books" v-bind:key="entry">
-        <td v-for="key in columns" v-bind:key="key">
-          {{entry[key]}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+		<div class="search-wrapper">
+			<input type="text" v-model="search" placeholder="Search title.."/>
+			<label>Search title:</label>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th v-for="key in columns" v-bind:key="key">
+						{{ key }}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="entry in filteredList" v-bind:key="entry">
+					<td v-for="key in columns" v-bind:key="key">
+						{{entry[key]}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </template>
 
 <script>
-//import axios from 'axios'
+import axios from 'axios'
 export default {
 	name: 'Apptable',
-
-	data: () => {
+	data () {
 		return {
-		columns: ['id','title', 'price'],
-		books: [
-			{id: 1, title: 'sadfdsa', price: 555}
-		]
-		}}
+			columns: ['title', 'price', 'stock', 'upc'],
+			search: '',
+			books: [
+			]
+		}},
+	mounted () {
+		const that = this
+		this.updateBooks(1)
+		this.$store.subscribe((mutation, state) => {
+			console.log('suscribed')
+			that.updateBooks(state.category)
+		})
+	},
+	computed: {
+		filteredList() {
+      return this.books.filter(book => {
+        return book.title.toLowerCase().includes(this.search.toLowerCase())
+      })
+    },
+	},
+	methods: {
+		updateBooks(category_id) {
+			axios
+				.get('/api/books/category/'+category_id+'?format=json')
+				.then(response => (this.books = response.data))
+		}
+	}
 }
 </script>
 

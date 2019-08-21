@@ -1,18 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <!--HelloWorld msg="Welcome to Your Vue.js App"/-->
+		<h1>Books Scrapper</h1>
+		<ScrappingButtons />
+		<CategoriesDropdown />
 		<Apptable />
   </div>
 </template>
 
 <script>
 import Apptable from './components/Table.vue'
+import CategoriesDropdown from './components/CategoriesDropdown.vue'
+import ScrappingButtons from './components/ScrappingButtons.vue'
 
 export default {
   name: 'app',
   components: {
-		Apptable
+		Apptable,
+		CategoriesDropdown,
+		ScrappingButtons
   }
 }
 </script>
