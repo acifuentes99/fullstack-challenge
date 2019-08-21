@@ -13,5 +13,7 @@ __pycache__
 .env
 .pytest_cache
 *.sqlite3
+techk/static
+techk/frontend/dist
 
 techk/frontend/package-lock\.json
