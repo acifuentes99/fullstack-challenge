@@ -5,11 +5,19 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
-		category: ''
+		category: '',
+		search: '',
+		searchfield: 'title'
 	},
 	mutations: {
 		changeCategory(state, category) {
 			state.category = category
+		},
+		changeSearch(state, search) {
+			state.search = search
+		},
+		changeSearchfield(state, searchfield) {
+			state.searchfield = searchfield
 		}
 	},
 	actions: {
@@ -20,6 +28,12 @@ const store = new Vuex.Store({
 	getters: {
 		category (state) {
 			return state.category
+		},
+		search (state) {
+			return state.search
+		},
+		searchfield (state) {
+			return state.searchfield
 		}
 	}
 })
