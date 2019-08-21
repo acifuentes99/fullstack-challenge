@@ -11,7 +11,7 @@
 			</thead>
 			<tbody>
 				<tr v-for="entry in filteredList" v-bind:key="entry.id">
-					<td> <img :src="entry.thumbnail"></img> </td>
+					<td> <img :src="entry.thumbnail_url"></img> </td>
 					<td>{{entry.title}}</td>
 					<td>{{entry.price}}</td>
 					<td>{{entry.stock}}</td>
@@ -19,7 +19,7 @@
 					<td>
 						<b-button size="sm" v-b-modal="'modal-'+entry.id">Description</b-button>
 						<b-modal :id="'modal-'+entry.id" :title="entry.title">
-							<p class="my-4">{{entry.description}}</p>
+							<p class="my-4">{{entry.product_description}}</p>
 						</b-modal>
 					</td>
 					<td><font-awesome-icon @click="removeBook(entry.id)" icon="trash-alt"></font-awesome-icon></td>
@@ -38,11 +38,13 @@ export default {
 			columns: ['thumbnail','title', 'price', 'stock', 'upc', 'description', 'delete'],
 			books: []
 		}},
-	mounted () {
+	beforeMount () {
 		const that = this
 		this.updateBooks(1)
 		this.$store.subscribe((mutation, state) => {
-			that.updateBooks(state.category)
+			if (mutation.type === 'changeCategory'){
+				that.updateBooks(state.category)
+			}
 		})
 	},
 	computed: {
@@ -55,16 +57,24 @@ export default {
 	},
 	methods: {
 		updateBooks(category_id) {
-			axios
-				.get('/api/books/category/'+category_id+'?format=json')
-				.then(response => (this.books = response.data))
+			if(!this.$store.getters.fallback) {
+				axios
+					.get('/api/books/category/'+category_id+'?format=json')
+					.then(response => (this.books = response.data))
+			}
+			else {
+				axios.get('/api/fallback')
+					.then(response => {
+						this.books = response.data.books.filter(
+							book => book.category_id.toString() === category_id.toString())
+					})
+			}
 		},
 		removeBook(book_id) {
 			let that = this
 			axios
 				.delete('/api/books/'+book_id+'/')
 				.then(() => {that.updateBooks(that.$store.getters.category)})
-				.catch((err) => console.log(err))
 		}
 	}
 }

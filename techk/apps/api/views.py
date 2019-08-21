@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from apps.scraper.models import Books, Categories
 from rest_framework import serializers, viewsets, generics
+import json
+import os
 
 
 class BooksSerializer(serializers.HyperlinkedModelSerializer):
@@ -10,8 +12,8 @@ class BooksSerializer(serializers.HyperlinkedModelSerializer):
     """
     class Meta:
         model = Books
-        fields = ['id', 'category_id', 'title', 'thumbnail', 'price',
-                  'stock', 'description', 'upc']
+        fields = ['id', 'category_id', 'title', 'thumbnail_url', 'price',
+                  'stock', 'product_description', 'upc']
 
 
 class CategoriesSerializer(serializers.HyperlinkedModelSerializer):
@@ -51,6 +53,17 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     """
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
+
+
+def fallbackJson(request):
+    """
+    En caso de no haber realizado el Scrapping, se retorna un JSON
+    temporal, con información sobre libros y categorias
+    """
+    app_dir = os.path.dirname(os.path.realpath(__file__))
+    book_data = json.load(open(app_dir+'/books.json'))
+    print(book_data[0])
+    return JsonResponse(book_data[0])
 
 
 def index(request):

@@ -38,15 +38,16 @@ export default {
 				{id: 1, title: 'sadfdsa'}
 			],
 			searchoptions: ['title', 'price', 'stock', 'upc', 'description'],
+			fallback: true
 		}},
-	mounted () {
-		var that = this
-		axios
-		.get('/api/categories/?format=json')
-			.then(response => {
-				that.categories = response.data
-				that.$store.commit('changeCategory', response.data[0].id)
-			})
+	created () {
+		let that = this
+		this.updateCategories()
+		this.$store.subscribe((mutation, state) => {
+			if (mutation.type === 'changeScrapped'){
+				that.updateCategories()
+			}
+		})
 	},
 	computed: {
 		search: {
@@ -59,6 +60,25 @@ export default {
 		}
 	},
 	methods: {
+		updateCategories(){
+			var that = this
+			axios
+				.get('/api/categories/?format=json')
+				.then(response => {
+					if (response.data.length > 0) {
+						that.categories = response.data
+						that.$store.commit('changeFallback', false)
+						that.$store.commit('changeCategory', response.data[0].id)
+					}
+					else {
+						axios.get('/api/fallback')
+							.then(response => {
+								that.categories = response.data.categories
+								that.$store.commit('changeCategory', response.data.categories[0].id)
+							})
+					}
+				})
+		},
 		onCategoryChange(e) {
 			this.$store.commit('changeCategory', e.target.value)
 		},
