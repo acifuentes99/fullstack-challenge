@@ -4,8 +4,6 @@
 <select id="categories" name="category" @change="onChange($event)">
 	<option v-for="category in categories" :key="category.id" :value="category.id">{{category.name}}</option>
 </select>
-
-		vuex: {{$store.getters.category}}
   </div>
 </template>
 

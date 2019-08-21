@@ -3,7 +3,6 @@
 		<h2>Vue Table</h2>	
 		<div class="search-wrapper">
 			<input type="text" v-model="search" placeholder="Search title.."/>
-			<label>Search title:</label>
 		</div>
 		<table>
 			<thead>
@@ -15,9 +14,12 @@
 			</thead>
 			<tbody>
 				<tr v-for="entry in filteredList" v-bind:key="entry">
-					<td v-for="key in columns" v-bind:key="key">
-						{{entry[key]}}
-					</td>
+						<td> <img :src="entry.thumbnail"></img> </td>
+						<td>{{entry.title}}</td>
+						<td>{{entry.price}}</td>
+						<td>{{entry.stock}}</td>
+						<td>{{entry.upc}}</td>
+						<td><button @click="removeBook(entry.id)">X</button></td>
 				</tr>
 			</tbody>
 		</table>
@@ -30,7 +32,7 @@ export default {
 	name: 'Apptable',
 	data () {
 		return {
-			columns: ['title', 'price', 'stock', 'upc'],
+			columns: ['thumbnail','title', 'price', 'stock', 'upc','delete'],
 			search: '',
 			books: [
 			]
@@ -55,6 +57,13 @@ export default {
 			axios
 				.get('/api/books/category/'+category_id+'?format=json')
 				.then(response => (this.books = response.data))
+		},
+		removeBook(book_id) {
+			let that = this
+			axios
+				.delete('/api/books/'+book_id+'/')
+				.then(() => {that.updateBooks(that.$store.getters.category)})
+				.catch((err) => console.log(err))
 		}
 	}
 }
@@ -119,5 +128,9 @@ th.active .arrow {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top: 4px solid #fff;
+}
+
+img {
+	height: 50px;
 }
 </style>
