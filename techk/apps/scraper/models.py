@@ -16,8 +16,8 @@ class Books(models.Model):
     """
     category = models.ForeignKey(Categories, related_name="books", on_delete=models.CASCADE)
     title = models.CharField(max_length=2048)
-    thumbnail = models.CharField(max_length=2048)
+    thumbnail_url = models.CharField(max_length=2048)
     price = models.FloatField()
-    stock = models.IntegerField(default=0)
-    description = models.TextField()
+    stock = models.BooleanField(default=False)
+    product_description = models.TextField(default=None, blank=True, null=True)
     upc = models.CharField(max_length=32)

@@ -1,12 +1,37 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from bs4 import BeautifulSoup
 from .models import Books, Categories
 import requests
 
 
-def scrapeCategories(request):
+def scrapeBooks(request, pages=1):
+    """
+    Realiza el proceso de Scrapping de un libro.
+    Esto, consultando la página de listado de libros, y posteriormente
+    realizando un Scrapping de cada libro en la lista.
+    """
+    if not Categories.objects.all().exists():
+        scrapeCategories() 
+    base_url = "http://books.toscrape.com/"
+    for page in range(1, pages+1):
+        page = requests.get(base_url+"catalogue/page-"+str(page)+".html")
+        soup_list = BeautifulSoup(page.content, 'html.parser')
+        list_content = soup_list.find("ol", {"class": "row"}).find_all("article")
+        for book in list_content:
+            book_title = book.find_all("a")[1]['title']
+            book_href = book.find("a")['href']
+            book_url = base_url+"catalogue/"+book_href
+            if not Books.objects.filter(title=book_title).exists() :
+                book_page = requests.get(book_url)
+                book_soup = BeautifulSoup(book_page.content, 'html.parser')
+                book_data = getBookDict(book_soup, book_url)
+                Books.objects.create(**book_data)
+    return HttpResponse(status=204)
+
+
+def scrapeCategories():
     """
     Realiza el Scrapping de las categorias del sitio.
     Esto, buscando el id de "side_categories" dentro del sitio principal,
@@ -19,51 +44,28 @@ def scrapeCategories(request):
     categories = content.find_all("a")
     for category in categories:
         Categories.objects.create(name=category.text.strip())
-    return HttpResponse("Categories Created")
+    return HttpResponse(status=204)
 
 
-def scrapeBooks(request):
+def getBookDict(book_soup, book_url):
     """
-    Realiza el proceso de Scrapping de un libro.
-    Esto, consultando la página de listado de libros, y posteriormente
-    realizando un Scrapping de cada libro en la lista.
+    Retorna diccionario, con los elementos necesarios del Scrapping para 
+    poder ser almacenados en la base de datos
+    NOTA: Existen descripciones nulas dentro de la página de libros,
+    por lo que se revisa si existe la descripción del producto, de lo
+    contrario se guarda como vacia.
     """
-    base_url = "http://books.toscrape.com/"
-    #pages = 50
-    pages = 2
-    for page in range(1, pages+1):
-        page = requests.get(base_url+"catalogue/page-"+str(page)+".html")
-        soup_list = BeautifulSoup(page.content, 'html.parser')
-        list_content = soup_list.find("ol", {"class": "row"}).find_all("article")
-        books = list()
-        for book in list_content:
-            book_href = book.find("a")['href']
-            book_url = base_url+"catalogue/"+book_href
-            book_page = requests.get(book_url)
-            book_soup = BeautifulSoup(book_page.content, 'html.parser')
-            book_data = {
-                'category': Categories.objects.get(name=book_soup .find("ul", {"class": "breadcrumb"}) .find_all("a")[2].text.strip()),
-                'title': book_soup.find("h1").text.strip(),
-                'thumbnail': book_url+"/../"+str(book_soup.find("div", {"class": "thumbnail"}).find("img")['src']),
-                'price': book_soup.find("p", {"class": "price_color"}).text.strip().replace("£", ""),
-                'stock': True if book_soup.find("p", {"class": "instock"}).find("i")['class'][0] == 'icon-ok' else False,
-                'description': book_soup.find("div", {"id": "product_description"}).find_next("p").text.strip(),
-                'upc': book_soup.find("table").find("td").text.strip()
-            }
-            books.append(book_soup.prettify())
-            Books.objects.create(**book_data)
-    return JsonResponse("Books scraped!")
-
-
-"""
-for book in list_content:
-    book_href = book.find("a")['href']
-    book_page = requests.get(base_url+book_href)
-    book_soup = BeautifulSoup(page.content, 'html.parser')
-    books.append(book_soup.prettify())
-
-
-
-                    'has_stock': True if book_soup.find("p", {"class": "instock"}).find("i")['class'][0] == 'icon-ok' else False,
-                    'stock': book_soup.find("p", {"class": "instock"}).text.strip(),
-"""
+    description_soup = book_soup.find("div", {"id": "product_description"})
+    if description_soup:
+        description = description_soup.find_next("p").text.strip()
+    else:
+        description = None
+    return {
+        'category': Categories.objects.get(name=book_soup .find("ul", {"class": "breadcrumb"}) .find_all("a")[2].text.strip()),
+        'title': book_soup.find("h1").text.strip(),
+        'thumbnail_url': book_url+"/../"+str(book_soup.find("div", {"class": "thumbnail"}).find("img")['src']),
+        'price': book_soup.find("p", {"class": "price_color"}).text.strip().replace("£", ""),
+        'stock': True if book_soup.find("p", {"class": "instock"}).find("i")['class'][0] == 'icon-ok' else False,
+        'product_description': description,
+        'upc': book_soup.find("table").find("td").text.strip()
+    }

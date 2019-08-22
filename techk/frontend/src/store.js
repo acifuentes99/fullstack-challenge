@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//https://medium.com/js-dojo/vuex-and-vue-bread-and-butter-4519a21e95ce
 
 Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
 		category: '',
 		search: '',
-		searchfield: 'title'
+		searchfield: 'title',
+		fallback: true,
+		scrapped: false
 	},
 	mutations: {
 		changeCategory(state, category) {
@@ -18,6 +19,12 @@ const store = new Vuex.Store({
 		},
 		changeSearchfield(state, searchfield) {
 			state.searchfield = searchfield
+		},
+		changeFallback(state, fallback) {
+			state.fallback = fallback
+		},
+		changeScrapped(state, scrapped) {
+			state.scrapped = scrapped
 		}
 	},
 	actions: {
@@ -34,6 +41,12 @@ const store = new Vuex.Store({
 		},
 		searchfield (state) {
 			return state.searchfield
+		},
+		fallback (state) {
+			return state.fallback
+		},
+		scrapped (state) {
+			return state.scrapped
 		}
 	}
 })

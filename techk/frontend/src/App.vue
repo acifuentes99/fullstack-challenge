@@ -1,12 +1,12 @@
 <template>
 	<div id="app">
 		<h1>Books Scrapper</h1>
-		<div class="row scrapper-container">
-			<div class="col-4"></div>
-			<div class="col-4">
-				<ScrappingButtons />
-			</div>
+		<div class="scrapper-container">
+			<ScrappingButtons />
 		</div>
+		<b-alert v-if="fallback" show variant="warning">
+			Nota: Scrapping actualmente no realizado, por lo que se muestran datos predefinidos. Favor de presionar "Start Scrapping", y esperar a que se realice el proceso de Scrapping
+		</b-alert>
 		<BooksFilter />
 		<div class="separator"></div>
 		<Apptable />
@@ -24,15 +24,19 @@ export default {
 		Apptable,
 		BooksFilter,
 		ScrappingButtons
-  }
+  },
+	computed: {
+		fallback: {
+			get() {
+				return this.$store.getters.fallback
+			}
+		}
+	}
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;

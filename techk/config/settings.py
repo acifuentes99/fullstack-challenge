@@ -9,12 +9,10 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -24,9 +22,9 @@ SECRET_KEY = '8x^ea1)kmvp_=#39=rb#c!wyxt(^io0n2j6qwb0cn_6sf*8_(%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+PRODUCTION = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'django_filters',
     'webpack_loader',
     'apps.base',
+    'apps.api',
     'apps.scraper',
 ]
 
@@ -58,7 +57,6 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 DIST_DIR = os.path.join(FRONTEND_DIR, 'dist')
-
 
 TEMPLATES = [
     {
@@ -84,7 +82,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ DIST_DIR ]
-#os.path.join(FRONTEND_DIR, 'static'),
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -113,8 +110,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -133,7 +128,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -146,4 +140,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
