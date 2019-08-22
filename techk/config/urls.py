@@ -24,7 +24,7 @@ from apps.scraper.views import scrapeBooks
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html')),
-    url(r'scrape/books', scrapeBooks),
+    path(r'scrape/books/<int:pages>/', scrapeBooks),
     path('api/', include('apps.api.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
 ]

@@ -19,5 +19,5 @@ class Books(models.Model):
     thumbnail_url = models.CharField(max_length=2048)
     price = models.FloatField()
     stock = models.BooleanField(default=False)
-    product_description = models.TextField()
+    product_description = models.TextField(default=None, blank=True, null=True)
     upc = models.CharField(max_length=32)

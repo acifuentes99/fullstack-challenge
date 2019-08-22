@@ -1,11 +1,8 @@
 <template>
 	<div id="app">
 		<h1>Books Scrapper</h1>
-		<div class="row scrapper-container">
-			<div class="col-4"></div>
-			<div class="col-4">
+		<div class="scrapper-container">
 				<ScrappingButtons />
-			</div>
 		</div>
   <b-alert v-if="fallback" show variant="warning">Nota: Scrapping actualmente no realizado, por lo que se muestran datos predefinidos. Favor de presionar "Start Scrapping", y esperar a que se realice el proceso de Scrapping</b-alert>
 		<BooksFilter />

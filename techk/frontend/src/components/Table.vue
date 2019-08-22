@@ -13,7 +13,7 @@
 				<tr v-for="entry in filteredList" v-bind:key="entry.id">
 					<td> <img :src="entry.thumbnail_url"></img> </td>
 					<td>{{entry.title}}</td>
-					<td>{{entry.price}}</td>
+					<td>£{{entry.price | pricefilter}}</td>
 					<td>{{entry.stock}}</td>
 					<td>{{entry.upc}}</td>
 					<td>
@@ -54,6 +54,14 @@ export default {
 					.includes(this.$store.getters.search.toString().toLowerCase())
 			})
 		},
+	},
+	filters: {
+		pricefilter(price) {
+			if (price.toString().charAt(0) === '£'){
+				return price.substr(1)
+			}
+			return price
+		}
 	},
 	methods: {
 		updateBooks(category_id) {

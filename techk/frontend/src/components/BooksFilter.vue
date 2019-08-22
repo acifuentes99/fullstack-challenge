@@ -5,7 +5,7 @@
 				Category: 
 			</div>
 			<div class="col-3">
-				<select class="form-control" id="categories" name="category" @change="onCategoryChange($event)">
+				<select :value="category" class="form-control" id="categories" name="category" @change="onCategoryChange($event)">
 					<option v-for="category in categories" :key="category.id" :value="category.id">{{category.name}}</option>
 				</select>
 			</div>
@@ -34,9 +34,7 @@ export default {
 	name: 'CategoriesDropdown',
 	data () {
 		return {
-			categories: [
-				{id: 1, title: 'sadfdsa'}
-			],
+			categories: [ ],
 			searchoptions: ['title', 'price', 'stock', 'upc', 'description'],
 			fallback: true
 		}},
@@ -56,6 +54,11 @@ export default {
 			},
 			get() {
 				return this.$store.getters.search
+			}
+		},
+		category: {
+			get() {
+				return this.$store.getters.category
 			}
 		}
 	},
