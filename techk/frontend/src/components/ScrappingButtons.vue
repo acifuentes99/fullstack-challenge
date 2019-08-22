@@ -37,6 +37,11 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * Ejecuta la acción de Scrapping en el Backend, a través de un request GET. El usuario 
+		 * puede también seleccionar la cantidad de páginas que realizará el Scrapping, para no
+		 * esperar todo el contenido en su totalidad.
+		 */
 		scrape()  {
 			let that = this
 			this.loading = true

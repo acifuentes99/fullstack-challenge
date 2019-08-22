@@ -11,7 +11,7 @@
 			</thead>
 			<tbody>
 				<tr v-for="entry in filteredList" v-bind:key="entry.id">
-					<td> <img :src="entry.thumbnail_url"></img> </td>
+					<td><img :src="entry.thumbnail_url"></td>
 					<td>{{entry.title}}</td>
 					<td>£{{entry.price | pricefilter}}</td>
 					<td>{{entry.stock}}</td>
@@ -48,6 +48,12 @@ export default {
 		})
 	},
 	computed: {
+		/**
+		 * Retorna los libros que cumplen con el criterio de busqueda seleccionado por el
+		 * usuario
+		 *
+		 * @returns {array} Filtro de libros respecto a criterio
+		 */
 		filteredList() {
 			return this.books.filter(book => {
 				return book[this.$store.getters.searchfield].toString().toLowerCase()
@@ -56,6 +62,13 @@ export default {
 		},
 	},
 	filters: {
+		/**
+		 * Revisa si la expresión para precio entregado esta correcto, esto debido a que el
+		 * JSON de fallback tiene el signo de moneda integrado, y se debe remover para mostrar
+		 * precios
+		 *
+		 * @param {number} price Precio entregado por la consulta realizada (fallback o a la API)
+		 */
 		pricefilter(price) {
 			if (price.toString().charAt(0) === '£'){
 				return price.substr(1)
@@ -64,6 +77,11 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * Actualiza el listado de libros, dependiendo de la categoria seleccionada
+		 *
+		 * @param {number} category_id ID de la categoria la cual se utilizará como filtro
+		 */
 		updateBooks(category_id) {
 			if(!this.$store.getters.fallback) {
 				axios
@@ -78,6 +96,11 @@ export default {
 					})
 			}
 		},
+		/**
+		 * Remueve libros de la base de datos, a través de la API de libros
+		 *
+		 * @param {number} book_id ID del libro el cual borrar
+		 */
 		removeBook(book_id) {
 			let that = this
 			axios

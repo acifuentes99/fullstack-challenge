@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from apps.scraper.models import Books, Categories
 from rest_framework import serializers, viewsets, generics
 import json
@@ -62,9 +62,4 @@ def fallbackJson(request):
     """
     app_dir = os.path.dirname(os.path.realpath(__file__))
     book_data = json.load(open(app_dir+'/books.json'))
-    print(book_data[0])
     return JsonResponse(book_data[0])
-
-
-def index(request):
-    return HttpResponse('Hello, world!')
